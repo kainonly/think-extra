@@ -1,34 +1,34 @@
 <?php
-
 declare (strict_types=1);
 
 namespace think\extra\common;
 
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 use Stringy\Stringy;
+use think\extra\contract\UtilsInterface;
 
 /**
- * 扩展处理类
- * Class StrFactory
+ * 工具生产类
+ * Class UtilsFactory
  * @package think\extra\common
  */
-final class ExtFactory
+final class UtilsFactory implements UtilsInterface
 {
     /**
      * @param string $str
-     * @param null $encoding
+     * @param string|null $encoding
      * @return Stringy
+     * @inheritDoc
      */
-    public function stringy($str = '', $encoding = null)
+    public function stringy($str = '', string $encoding = null)
     {
         return Stringy::create($str, $encoding);
     }
 
     /**
-     * 生成 UUID Version4
-     * @return UuidInterface
+     * @return \Ramsey\Uuid\UuidInterface
      * @throws \Exception
+     * @inheritDoc
      */
     public function uuid()
     {

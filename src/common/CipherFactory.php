@@ -1,24 +1,29 @@
 <?php
-
 declare (strict_types=1);
 
 namespace think\extra\common;
 
 use phpseclib\Crypt\AES;
-use think\bit\facade\Ext;
+use think\extra\contract\CipherInterface;
+use think\extra\contract\UtilsInterface;
 
 /**
  * 对称加密类
  * Class HashFactory
  * @package think\extra\common
  */
-final class CipherFactory
+final class CipherFactory implements CipherInterface
 {
     /**
      * 钥匙串
      * @var AES
      */
     private $cipher;
+    /**
+     * 工具类
+     * @var UtilsInterface
+     */
+    private $utils;
 
     /**
      * 构造处理
@@ -26,45 +31,40 @@ final class CipherFactory
      * @param string $key 密钥
      * @param string $iv 偏移量
      */
-    public function __construct(string $key, string $iv)
+    public function __construct(\stdClass $args, UtilsInterface $utils)
     {
         $this->cipher = new AES();
-        $this->cipher->setKey($key);
-        $this->cipher->setIV($iv);
+        $this->cipher->setKey($args->key);
+        $this->cipher->setIV($args->iv);
+        $this->utils = $utils;
     }
 
     /**
-     * 加密
-     * @param string|array $context 加密内容
-     * @return string 密文
+     * @param array|string $context
+     * @return string
+     * @inheritDoc
      */
     public function encrypt($context)
     {
         if (is_string($context)) {
             return base64_encode($this->cipher->encrypt($context));
         } elseif (is_array($context)) {
-            return base64_encode($this->cipher->encrypt(
-                json_encode($context)
-            ));
+            return base64_encode($this->cipher->encrypt(json_encode($context)));
         } else {
             return '';
         }
     }
 
     /**
-     * 解密
-     * @param string $ciphertext 密文
-     * @param bool $is_array 是否为数组
-     * @return string|array 数据源
+     * @param string $ciphertext
+     * @param bool $auto_conver
+     * @return array|mixed|string
+     * @inheritDoc
      */
     public function decrypt(string $ciphertext, bool $auto_conver = true)
     {
-        $data = $this->cipher->decrypt(
-            base64_decode($ciphertext)
-        );
-
-        return Ext::stringy($data)->isJson() && $auto_conver ?
-            json_decode($data, true) :
-            $data;
+        $data = $this->cipher->decrypt(base64_decode($ciphertext));
+        return $this->utils->stringy($data)->isJson() && $auto_conver ?
+            json_decode($data, true) : $data;
     }
 }

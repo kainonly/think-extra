@@ -12,10 +12,10 @@ final class HashService extends Service
     public function register()
     {
         $this->app->bind('hashing', function () {
-            $type = $this->app->config
+            $options = $this->app->config
                 ->get('hashing');
 
-            return new HashFactory($type);
+            return new HashFactory($options);
         });
     }
 }

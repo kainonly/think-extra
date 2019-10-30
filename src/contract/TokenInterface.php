@@ -1,0 +1,10 @@
+<?php
+
+
+namespace think\extra\contract;
+
+
+interface TokenInterface
+{
+
+}

@@ -1,5 +1,4 @@
 <?php
-
 declare (strict_types=1);
 
 namespace think\extra\common;
@@ -18,13 +17,20 @@ final class HashFactory
     private $algo;
 
     /**
+     * 加密配置
+     * @var array
+     */
+    private $options;
+
+    /**
      * 构造处理
      * HashFactory constructor.
-     * @param string $type
+     * @param array $config
      */
-    public function __construct(string $type)
+    public function __construct(array $config)
     {
-        $this->algo = $this->getAlgo($type);
+        $this->algo = $this->getAlgo($config['driver']);
+        $this->options = !empty($config[$this->algo]) ? $config[$this->algo] : [];
     }
 
     /**
@@ -49,11 +55,15 @@ final class HashFactory
      * HASH加密
      * @param string $password 密码值
      * @param array $options
-     * @return boolean|string
+     * @return false|string
      */
     public function create(string $password, array $options = [])
     {
-        return password_hash($password, $this->algo, $options);
+        return password_hash(
+            $password,
+            $this->algo,
+            !empty($options) ? $options : $this->options
+        );
     }
 
     /**
