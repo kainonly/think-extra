@@ -24,6 +24,9 @@
       ]
     }
   },
+  "suggest": {
+    "kain/think-support": "ThinkPHP 依赖与功能支持库"
+  },
   "authors": [
     {
       "name": "kain",
