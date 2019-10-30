@@ -1,0 +1,38 @@
+{
+  "name": "kain/think-extra",
+  "description": "ThinkPHP 扩展库，让它具备类似 Laravel 的常用功能",
+  "require": {
+    "php": ">=7.2.0",
+    "topthink/framework": "^6.0.0",
+    "ramsey/uuid": "^3.8",
+    "danielstjules/stringy": "^3.1",
+    "phpseclib/phpseclib": "^2.0",
+    "lcobucci/jwt": "^3.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "think\\extra\\": "src/"
+    }
+  },
+  "extra": {
+    "think": {
+      "services": [
+        "think\\bit\\service\\HashService",
+        "think\\bit\\service\\CipherService",
+        "think\\bit\\service\\ExtService",
+        "think\\bit\\service\\JwtService"
+      ]
+    }
+  },
+  "authors": [
+    {
+      "name": "kain",
+      "email": "zhangtqx@vip.qq.com"
+    }
+  ],
+  "support": {
+    "docs": "https://think-bit.kain.net.cn",
+    "email": "zhangtqx@vip.qq.com"
+  },
+  "license": "MIT"
+}
