@@ -5,6 +5,7 @@ namespace testing;
 
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
+use Stringy\Stringy;
 use think\App;
 use think\extra\common\UtilsFactory;
 use think\extra\contract\UtilsInterface;
@@ -12,9 +13,13 @@ use think\extra\service\UtilsService;
 
 class UtilsTest extends TestCase
 {
+    /**
+     * @return App
+     */
     public function testNewApp()
     {
         $app = new App();
+        $app->initialize();
         $this->assertInstanceOf(
             App::class,
             $app,
@@ -42,15 +47,28 @@ class UtilsTest extends TestCase
 
     /**
      * @param UtilsInterface $utils
-     * @throws \Exception
      * @depends testRegisterService
+     * @throws \Exception
      */
     public function testUuid(UtilsInterface $utils)
     {
         $this->assertInstanceOf(
             Uuid::class,
             $utils->uuid(),
-            'UUID 生成失败'
+            'uuid version4 创建成功'
+        );
+    }
+
+    /**
+     * @param UtilsInterface $utils
+     * @depends testRegisterService
+     */
+    public function testStringy(UtilsInterface $utils)
+    {
+        $this->assertInstanceOf(
+            Stringy::class,
+            $utils->stringy('hello'),
+            'Stringy 创建失败'
         );
     }
 }

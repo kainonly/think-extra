@@ -31,25 +31,19 @@ final class HashFactory implements HashInterface
      */
     public function __construct(array $config)
     {
-        $this->algo = $this->getAlgo($config['driver']);
-        $this->options = !empty($config[$this->algo]) ? $config[$this->algo] : [];
-    }
-
-    /**
-     * 获取加密算法
-     * @return int
-     */
-    private function getAlgo(string $type)
-    {
-        switch ($type) {
+        switch ($config['driver']) {
             case 'argon2id':
-                return PASSWORD_ARGON2ID;
-            case 'argon2i':
-                return PASSWORD_ARGON2I;
+                $this->algo = PASSWORD_ARGON2ID;
+                $this->options = $config['argon'];
+                break;
+            case 'argon':
+                $this->algo = PASSWORD_ARGON2I;
+                $this->options = $config['argon'];
+                break;
             case 'bcrypt':
-                return PASSWORD_BCRYPT;
-            default:
-                return PASSWORD_ARGON2I;
+                $this->algo = PASSWORD_BCRYPT;
+                $this->options = $config['bcrypt'];
+                break;
         }
     }
 

@@ -1,0 +1,4 @@
+/.vscode
+/vendor
+/testing/.phpunit.result.cache
+composer.lock
