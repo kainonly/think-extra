@@ -49,7 +49,13 @@ class ContextTest extends TestCase
      */
     public function testContext(ContextInterface $context)
     {
-        $context->set('name', 'abc');
-        $this->assertEquals('abc', $context->get('name'));
+        $start = function () use ($context) {
+            $context->set('name', 'abc');
+        };
+        $start();
+        $funcGet = function () use ($context) {
+            return $context->get('name');
+        };
+        $this->assertEquals('abc', $funcGet(), '上下文内容获取失败');
     }
 }

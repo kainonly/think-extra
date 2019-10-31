@@ -18,10 +18,11 @@
   "extra": {
     "think": {
       "services": [
-        "think\\bit\\service\\HashService",
-        "think\\bit\\service\\CipherService",
-        "think\\bit\\service\\ExtService",
-        "think\\bit\\service\\JwtService"
+        "think\\extra\\service\\CipherService",
+        "think\\extra\\service\\ContextService",
+        "think\\extra\\service\\HashService",
+        "think\\extra\\service\\TokenService",
+        "think\\extra\\service\\UtilsService"
       ]
     }
   },
