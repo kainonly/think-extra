@@ -55,7 +55,7 @@ class UtilsTest extends TestCase
         $this->assertInstanceOf(
             Uuid::class,
             $utils->uuid(),
-            'uuid version4 创建成功'
+            'uuid version4 创建失败'
         );
     }
 
