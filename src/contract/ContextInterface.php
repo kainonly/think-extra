@@ -13,8 +13,8 @@ interface ContextInterface
 
     /**
      * 获取内容
-     * @param $abstract
+     * @param string $abstract
      * @return mixed
      */
-    public function get($abstract);
+    public function get(string $abstract);
 }

@@ -31,11 +31,11 @@ final class ContextFactory implements ContextInterface
     }
 
     /**
-     * @param $abstract
+     * @param string $abstract
      * @return mixed|null
      * @inheritDoc
      */
-    public function get($abstract)
+    public function get(string $abstract)
     {
         return !empty($this->context[$abstract]) ?
             $this->context[$abstract] :
