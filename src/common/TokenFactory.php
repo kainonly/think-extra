@@ -7,13 +7,14 @@ use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key;
+use think\extra\contract\TokenInterface;
 
 /**
  * 令牌操作类
  * Class JwtFactory
  * @package think\extra\common
  */
-final class TokenFactory
+final class TokenFactory implements TokenInterface
 {
     /**
      * 令牌配置
@@ -44,12 +45,12 @@ final class TokenFactory
     }
 
     /**
-     * 生成令牌
      * @param string $scene
      * @param string $jti
      * @param string $ack
      * @param array $symbol
-     * @return \Lcobucci\JWT\Token|false
+     * @return bool|false|\Lcobucci\JWT\Token
+     * @inheritDoc
      */
     public function create(string $scene, string $jti, string $ack, array $symbol = [])
     {
@@ -64,9 +65,9 @@ final class TokenFactory
     }
 
     /**
-     * 获取令牌对象
      * @param string $tokenString
      * @return \Lcobucci\JWT\Token
+     * @inheritDoc
      */
     public function get(string $tokenString)
     {
@@ -74,11 +75,11 @@ final class TokenFactory
     }
 
     /**
-     * 验证令牌
      * @param string $scene
      * @param string $tokenString
      * @return \stdClass
      * @throws \Exception
+     * @inheritDoc
      */
     public function verify(string $scene, string $tokenString)
     {

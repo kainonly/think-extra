@@ -3,12 +3,14 @@ declare (strict_types=1);
 
 namespace think\extra\common;
 
+use think\extra\contract\HashInterface;
+
 /**
  * HASH 操作类
  * Class HashFactory
  * @package think\extra\common
  */
-final class HashFactory
+final class HashFactory implements HashInterface
 {
     /**
      * 加密算法
@@ -52,10 +54,10 @@ final class HashFactory
     }
 
     /**
-     * HASH加密
-     * @param string $password 密码值
+     * @param string $password
      * @param array $options
      * @return false|string
+     * @inheritDoc
      */
     public function create(string $password, array $options = [])
     {
@@ -67,14 +69,13 @@ final class HashFactory
     }
 
     /**
-     * HASH验证
-     * @param string $password 密码值
-     * @param string $hashPassword Hash值
-     * @return boolean
+     * @param string $password
+     * @param string $hashPassword
+     * @return bool
+     * @inheritDoc
      */
     public function check(string $password, string $hashPassword)
     {
         return password_verify($password, $hashPassword);
     }
-
 }
