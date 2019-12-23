@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace testing;
+namespace tests;
 
-use PHPUnit\Framework\TestCase;
+use Exception;
+use think\App;
 use Ramsey\Uuid\Uuid;
 use Stringy\Stringy;
-use think\App;
+use PHPUnit\Framework\TestCase;
 use think\extra\common\UtilsFactory;
 use think\extra\contract\UtilsInterface;
 use think\extra\service\UtilsService;
@@ -48,15 +49,18 @@ class UtilsTest extends TestCase
     /**
      * @param UtilsInterface $utils
      * @depends testRegisterService
-     * @throws \Exception
      */
     public function testUuid(UtilsInterface $utils)
     {
-        $this->assertInstanceOf(
-            Uuid::class,
-            $utils->uuid(),
-            'uuid version4 创建失败'
-        );
+        try {
+            $this->assertInstanceOf(
+                Uuid::class,
+                $utils->uuid(),
+                'uuid version4 创建失败'
+            );
+        } catch (Exception $e) {
+            $this->expectErrorMessage($e->getMessage());
+        }
     }
 
     /**

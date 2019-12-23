@@ -19,5 +19,5 @@ interface HashInterface
      * @param string $hashPassword Hash值
      * @return boolean
      */
-    public function check(string $password, string $hashPassword);
+    public function check(string $password, string $hashPassword): bool;
 }

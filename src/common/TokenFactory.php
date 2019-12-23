@@ -3,10 +3,14 @@ declare (strict_types=1);
 
 namespace think\extra\common;
 
+use InvalidArgumentException;
+use stdClass;
+use Exception;
+use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
 use think\extra\contract\TokenInterface;
 
 /**
@@ -14,23 +18,19 @@ use think\extra\contract\TokenInterface;
  * Class JwtFactory
  * @package think\extra\common
  */
-final class TokenFactory implements TokenInterface
+class TokenFactory implements TokenInterface
 {
     /**
      * 令牌配置
      * @var array $config
      */
     private $options;
+
     /**
      * 令牌密钥
      * @var string $secret
      */
     private $secret;
-    /**
-     * 令牌签名
-     * @var Sha256 $signer
-     */
-    private $signer;
 
     /**
      * 构造处理
@@ -41,7 +41,6 @@ final class TokenFactory implements TokenInterface
     {
         $this->secret = $secret;
         $this->options = $options;
-        $this->signer = new Sha256();
     }
 
     /**
@@ -49,27 +48,31 @@ final class TokenFactory implements TokenInterface
      * @param string $jti
      * @param string $ack
      * @param array $symbol
-     * @return bool|false|\Lcobucci\JWT\Token
+     * @return Token
      * @inheritDoc
      */
-    public function create(string $scene, string $jti, string $ack, array $symbol = [])
+    public function create(string $scene, string $jti, string $ack, array $symbol = []): Token
     {
-        return !empty($this->options[$scene]) ? (new Builder())
+        if (empty($this->options[$scene])) {
+            throw new InvalidArgumentException("The [$scene] does not exist.");
+        }
+
+        return (new Builder())
             ->issuedBy($this->options[$scene]['issuer'])
             ->permittedFor($this->options[$scene]['audience'])
             ->identifiedBy($jti, true)
             ->withClaim('ack', $ack)
             ->withClaim('symbol', $symbol)
             ->expiresAt(time() + $this->options[$scene]['expires'])
-            ->getToken($this->signer, new Key($this->secret)) : false;
+            ->getToken(new Sha256(), new Key($this->secret));
     }
 
     /**
      * @param string $tokenString
-     * @return \Lcobucci\JWT\Token
+     * @return Token
      * @inheritDoc
      */
-    public function get(string $tokenString)
+    public function get(string $tokenString): Token
     {
         return (new Parser())->parse($tokenString);
     }
@@ -77,23 +80,23 @@ final class TokenFactory implements TokenInterface
     /**
      * @param string $scene
      * @param string $tokenString
-     * @return \stdClass
-     * @throws \Exception
+     * @return stdClass
+     * @throws Exception
      * @inheritDoc
      */
-    public function verify(string $scene, string $tokenString)
+    public function verify(string $scene, string $tokenString): stdClass
     {
         $token = (new Parser())->parse($tokenString);
-        if (!$token->verify($this->signer, $this->secret)) {
-            throw new \Exception('Token validation is incorrect');
+        if (!$token->verify(new Sha256(), $this->secret)) {
+            throw new Exception('Token validation is incorrect');
         }
 
         if ($token->getClaim('iss') != $this->options[$scene]['issuer'] ||
             $token->getClaim('aud') != $this->options[$scene]['audience']) {
-            throw new \Exception('Token information is incorrect');
+            throw new Exception('Token information is incorrect');
         }
 
-        $result = new \stdClass();
+        $result = new stdClass();
         $result->expired = $token->isExpired();
         $result->token = $token;
         return $result;

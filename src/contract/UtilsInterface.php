@@ -1,26 +1,27 @@
 <?php
-
 declare (strict_types=1);
 
 namespace think\extra\contract;
 
-use Ramsey\Uuid\UuidInterface;
+use Exception;
 use Stringy\Stringy;
+use Ramsey\Uuid\UuidInterface;
+
 
 interface UtilsInterface
 {
     /**
      * 生成 Stringy 工具
-     * @param mixed $str
+     * @param string $str
      * @param string $encoding
      * @return Stringy
      */
-    public function stringy($str = '', string $encoding = null);
+    public function stringy(string $str, string $encoding = ''): Stringy;
 
     /**
      * 生成 UUID V4
      * @return UuidInterface
-     * @throws \Exception
+     * @throws Exception
      */
-    public function uuid();
+    public function uuid(): UuidInterface;
 }

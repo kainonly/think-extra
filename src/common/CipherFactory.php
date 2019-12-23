@@ -12,13 +12,18 @@ use think\extra\contract\UtilsInterface;
  * Class HashFactory
  * @package think\extra\common
  */
-final class CipherFactory implements CipherInterface
+class CipherFactory implements CipherInterface
 {
     /**
-     * 钥匙串
-     * @var AES
+     * @var string 密钥
      */
-    private $cipher;
+    private $key;
+
+    /**
+     * @var string 偏移量
+     */
+    private $iv;
+
     /**
      * 工具类
      * @var UtilsInterface
@@ -28,15 +33,31 @@ final class CipherFactory implements CipherInterface
     /**
      * 构造处理
      * CipherFactory constructor.
-     * @param string $key 密钥
-     * @param string $iv 偏移量
+     * @param string $key
+     * @param string $iv
+     * @param UtilsInterface $utils
      */
-    public function __construct(\stdClass $args, UtilsInterface $utils)
+    public function __construct(
+        string $key,
+        string $iv,
+        UtilsInterface $utils
+    )
     {
-        $this->cipher = new AES();
-        $this->cipher->setKey($args->key);
-        $this->cipher->setIV($args->iv);
+        $this->key = $key;
+        $this->iv = $iv;
         $this->utils = $utils;
+    }
+
+    /**
+     * 生产加密工具
+     * @return AES
+     */
+    private function factoryCipher(): AES
+    {
+        $cipher = new AES();
+        $cipher->setKey($this->key);
+        $cipher->setIV($this->iv);
+        return $cipher;
     }
 
     /**
@@ -44,12 +65,13 @@ final class CipherFactory implements CipherInterface
      * @return string
      * @inheritDoc
      */
-    public function encrypt($context)
+    public function encrypt($context): string
     {
+        $cipher = $this->factoryCipher();
         if (is_string($context)) {
-            return base64_encode($this->cipher->encrypt($context));
+            return base64_encode($cipher->encrypt($context));
         } elseif (is_array($context)) {
-            return base64_encode($this->cipher->encrypt(json_encode($context)));
+            return base64_encode($cipher->encrypt(json_encode($context)));
         } else {
             return '';
         }
@@ -63,7 +85,8 @@ final class CipherFactory implements CipherInterface
      */
     public function decrypt(string $ciphertext, bool $auto_conver = true)
     {
-        $data = $this->cipher->decrypt(base64_decode($ciphertext));
+        $cipher = $this->factoryCipher();
+        $data = $cipher->decrypt(base64_decode($ciphertext));
         return $this->utils->stringy($data)->isJson() && $auto_conver ?
             json_decode($data, true) : $data;
     }

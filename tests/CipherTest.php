@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace testing;
+namespace tests;
 
-use PHPUnit\Framework\TestCase;
+use stdClass;
 use think\App;
+use PHPUnit\Framework\TestCase;
 use think\extra\common\CipherFactory;
 use think\extra\contract\CipherInterface;
 use think\extra\service\CipherService;
@@ -49,12 +50,12 @@ class CipherTest extends TestCase
 
     /**
      * @param CipherInterface $cipher
-     * @return \stdClass
+     * @return stdClass
      * @depends testRegisterService
      */
     public function testEncrypt(CipherInterface $cipher)
     {
-        $params = new \stdClass();
+        $params = new stdClass();
         $params->cipher = $cipher;
         $params->context = $cipher->encrypt($this->data);
         $this->assertNotEmpty($params->context, '加密不成功');
@@ -62,10 +63,10 @@ class CipherTest extends TestCase
     }
 
     /**
-     * @param \stdClass $params
+     * @param stdClass $params
      * @depends testEncrypt
      */
-    public function testDecrypt(\stdClass $params)
+    public function testDecrypt(stdClass $params)
     {
         /**
          * @var CipherInterface $cipher

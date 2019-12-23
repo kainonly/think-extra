@@ -1,5 +1,4 @@
 <?php
-
 declare (strict_types=1);
 
 namespace think\extra\service;
@@ -8,7 +7,7 @@ use think\extra\common\TokenFactory;
 use think\extra\contract\TokenInterface;
 use think\Service;
 
-final class TokenService extends Service
+class TokenService extends Service
 {
     public function register()
     {

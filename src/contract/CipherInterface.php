@@ -1,4 +1,5 @@
 <?php
+declare (strict_types=1);
 
 namespace think\extra\contract;
 
@@ -9,7 +10,7 @@ interface CipherInterface
      * @param string|array $context 加密内容
      * @return string 密文
      */
-    public function encrypt($context);
+    public function encrypt($context): string;
 
     /**
      * 解密

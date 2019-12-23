@@ -13,19 +13,19 @@ use think\extra\contract\UtilsInterface;
  * Class ContextFactory
  * @package think\extra\common
  */
-final class ContextFactory implements ContextInterface
+class ContextFactory implements ContextInterface
 {
     /**
-     * @var array
+     * @var array 上下文内容
      */
     private $context = [];
 
     /**
      * @param string $abstract
-     * @param $value
+     * @param mixed $value
      * @inheritDoc
      */
-    public function set(string $abstract, $value)
+    public function set(string $abstract, $value): void
     {
         $this->context[$abstract] = $value;
     }

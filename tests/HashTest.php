@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace testing;
+namespace tests;
 
-use PHPUnit\Framework\TestCase;
+use stdClass;
 use think\App;
+use PHPUnit\Framework\TestCase;
 use think\extra\common\HashFactory;
 use think\extra\contract\HashInterface;
 use think\extra\service\HashService;
-
 
 class HashTest extends TestCase
 {
@@ -52,7 +52,7 @@ class HashTest extends TestCase
      */
     public function testCreateHash(HashInterface $hash)
     {
-        $params = new \stdClass();
+        $params = new stdClass();
         $params->hash = $hash;
         $params->context = $hash->create($this->password);
         $this->assertNotEmpty(
@@ -63,10 +63,10 @@ class HashTest extends TestCase
     }
 
     /**
-     * @param \stdClass $params
+     * @param stdClass $params
      * @depends testCreateHash
      */
-    public function testCheckHash(\stdClass $params)
+    public function testCheckHash(stdClass $params)
     {
         /**
          * @var HashInterface $hash

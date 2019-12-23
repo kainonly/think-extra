@@ -3,8 +3,10 @@ declare (strict_types=1);
 
 namespace think\extra\common;
 
-use Ramsey\Uuid\Uuid;
+use Exception;
 use Stringy\Stringy;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use think\extra\contract\UtilsInterface;
 
 /**
@@ -12,25 +14,25 @@ use think\extra\contract\UtilsInterface;
  * Class UtilsFactory
  * @package think\extra\common
  */
-final class UtilsFactory implements UtilsInterface
+class UtilsFactory implements UtilsInterface
 {
     /**
      * @param string $str
-     * @param string|null $encoding
+     * @param string $encoding
      * @return Stringy
      * @inheritDoc
      */
-    public function stringy($str = '', string $encoding = null)
+    public function stringy(string $str, string $encoding = ''): Stringy
     {
         return Stringy::create($str, $encoding);
     }
 
     /**
-     * @return \Ramsey\Uuid\UuidInterface
-     * @throws \Exception
+     * @return UuidInterface
+     * @throws Exception
      * @inheritDoc
      */
-    public function uuid()
+    public function uuid(): UuidInterface
     {
         return Uuid::uuid4();
     }

@@ -1,11 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace testing;
+namespace tests;
 
+use Exception;
+use stdClass;
+use think\App;
 use Lcobucci\JWT\Token;
 use PHPUnit\Framework\TestCase;
-use think\App;
 use think\extra\common\TokenFactory;
 use think\extra\contract\TokenInterface;
 use think\extra\service\TokenService;
@@ -34,7 +36,7 @@ class TokenTest extends TestCase
      */
     public function testRegisterService(App $app)
     {
-        $params = new \stdClass();
+        $params = new stdClass();
         $app->register(TokenService::class);
         $params->tokenFactory = $app->get(TokenInterface::class);
         $this->assertInstanceOf(
@@ -47,10 +49,10 @@ class TokenTest extends TestCase
     }
 
     /**
-     * @param \stdClass $params
+     * @param stdClass $params
      * @depends testRegisterService
      */
-    public function testCreate(\stdClass $params)
+    public function testCreate(stdClass $params)
     {
         /**
          * @var TokenInterface $tokenFactory
@@ -65,10 +67,10 @@ class TokenTest extends TestCase
     }
 
     /**
-     * @param \stdClass $params
+     * @param stdClass $params
      * @depends testCreate
      */
-    public function testGet(\stdClass $params)
+    public function testGet(stdClass $params)
     {
         /**
          * @var TokenInterface $tokenFactory
@@ -82,19 +84,22 @@ class TokenTest extends TestCase
     }
 
     /**
-     * @param \stdClass $params
-     * @throws \Exception
+     * @param stdClass $params
      * @depends testCreate
      */
-    public function testVerify(\stdClass $params)
+    public function testVerify(stdClass $params)
     {
-        /**
-         * @var TokenInterface $tokenFactory
-         */
-        $tokenFactory = $params->tokenFactory;
-        $result = $tokenFactory->verify('default', $params->token);
-        $this->assertIsBool($result->expired, '未生成超时状态');
-        $this->assertInstanceOf(Token::class, $result->token, '令牌信息获取失败');
+        try {
+            /**
+             * @var TokenInterface $tokenFactory
+             */
+            $tokenFactory = $params->tokenFactory;
+            $result = $tokenFactory->verify('default', $params->token);
+            $this->assertIsBool($result->expired, '未生成超时状态');
+            $this->assertInstanceOf(Token::class, $result->token, '令牌信息获取失败');
+        } catch (Exception $e) {
+            $this->expectErrorMessage($e->getMessage());
+        }
     }
 
 }

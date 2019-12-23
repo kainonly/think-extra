@@ -1,5 +1,4 @@
 <?php
-
 declare (strict_types=1);
 
 namespace think\extra\service;
@@ -8,7 +7,7 @@ use think\extra\common\HashFactory;
 use think\extra\contract\HashInterface;
 use think\Service;
 
-final class HashService extends Service
+class HashService extends Service
 {
     public function register()
     {

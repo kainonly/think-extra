@@ -10,7 +10,7 @@ use think\extra\contract\HashInterface;
  * Class HashFactory
  * @package think\extra\common
  */
-final class HashFactory implements HashInterface
+class HashFactory implements HashInterface
 {
     /**
      * 加密算法
@@ -27,22 +27,22 @@ final class HashFactory implements HashInterface
     /**
      * 构造处理
      * HashFactory constructor.
-     * @param array $config
+     * @param array $options
      */
-    public function __construct(array $config)
+    public function __construct(array $options)
     {
-        switch ($config['driver']) {
+        switch ($options['driver']) {
             case 'argon2id':
                 $this->algo = PASSWORD_ARGON2ID;
-                $this->options = $config['argon'];
+                $this->options = $options['argon'];
                 break;
             case 'argon':
                 $this->algo = PASSWORD_ARGON2I;
-                $this->options = $config['argon'];
+                $this->options = $options['argon'];
                 break;
             case 'bcrypt':
                 $this->algo = PASSWORD_BCRYPT;
-                $this->options = $config['bcrypt'];
+                $this->options = $options['bcrypt'];
                 break;
         }
     }
@@ -68,7 +68,7 @@ final class HashFactory implements HashInterface
      * @return bool
      * @inheritDoc
      */
-    public function check(string $password, string $hashPassword)
+    public function check(string $password, string $hashPassword): bool
     {
         return password_verify($password, $hashPassword);
     }
