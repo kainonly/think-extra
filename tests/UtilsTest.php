@@ -4,75 +4,40 @@ declare(strict_types=1);
 namespace tests;
 
 use Exception;
-use think\App;
 use Ramsey\Uuid\Uuid;
 use Stringy\Stringy;
-use PHPUnit\Framework\TestCase;
-use think\extra\common\UtilsFactory;
 use think\extra\contract\UtilsInterface;
 use think\extra\service\UtilsService;
 
-class UtilsTest extends TestCase
+class UtilsTest extends BaseTest
 {
     /**
-     * @return App
+     * @var UtilsInterface
      */
-    public function testNewApp()
+    private $utils;
+
+    public function setUp(): void
     {
-        $app = new App();
-        $app->initialize();
-        $this->assertInstanceOf(
-            App::class,
-            $app,
-            '应用容器创建失败'
-        );
-        return $app;
+        parent::setUp();
+        $this->app->register(UtilsService::class);
+        $this->utils = $this->app->get(UtilsInterface::class);
     }
 
-    /**
-     * @param App $app
-     * @return object
-     * @depends testNewApp
-     */
-    public function testRegisterService(App $app)
-    {
-        $app->register(UtilsService::class);
-        $utils = $app->get(UtilsInterface::class);
-        $this->assertInstanceOf(
-            UtilsFactory::class,
-            $utils,
-            '服务注册失败'
-        );
-        return $utils;
-    }
-
-    /**
-     * @param UtilsInterface $utils
-     * @depends testRegisterService
-     */
-    public function testUuid(UtilsInterface $utils)
+    public function testUuid()
     {
         try {
-            $this->assertInstanceOf(
-                Uuid::class,
-                $utils->uuid(),
-                'uuid version4 创建失败'
-            );
+            $uuid = $this->utils->uuid();
+            $this->assertInstanceOf(Uuid::class, $uuid);
+            $this->assertNotEmpty($uuid->toString());
         } catch (Exception $e) {
             $this->expectErrorMessage($e->getMessage());
         }
     }
 
-    /**
-     * @param UtilsInterface $utils
-     * @depends testRegisterService
-     */
-    public function testStringy(UtilsInterface $utils)
+    public function testStringy()
     {
-        $this->assertInstanceOf(
-            Stringy::class,
-            $utils->stringy('hello'),
-            'Stringy 创建失败'
-        );
+        $stringy = $this->utils->stringy('hello');
+        $this->assertInstanceOf(Stringy::class, $stringy);
+        $this->assertEquals('e', $stringy->at(1));
     }
 }

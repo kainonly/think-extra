@@ -4,99 +4,82 @@ declare(strict_types=1);
 namespace tests;
 
 use Exception;
-use stdClass;
-use think\App;
 use Lcobucci\JWT\Token;
-use PHPUnit\Framework\TestCase;
-use think\extra\common\TokenFactory;
 use think\extra\contract\TokenInterface;
 use think\extra\service\TokenService;
 
-class TokenTest extends TestCase
+class TokenTest extends BaseTest
 {
     /**
-     * @return App
+     * @var TokenInterface
      */
-    public function testNewApp()
-    {
-        $app = new App();
-        $app->initialize();
-        $this->assertInstanceOf(
-            App::class,
-            $app,
-            '应用容器创建失败'
-        );
-        return $app;
-    }
+    private $token;
 
     /**
-     * @param App $app
-     * @return object
-     * @depends testNewApp
+     * @var string
      */
-    public function testRegisterService(App $app)
-    {
-        $params = new stdClass();
-        $app->register(TokenService::class);
-        $params->tokenFactory = $app->get(TokenInterface::class);
-        $this->assertInstanceOf(
-            TokenFactory::class,
-            $params->tokenFactory,
-            '服务注册失败'
-        );
-
-        return $params;
-    }
+    private $scene;
 
     /**
-     * @param stdClass $params
-     * @depends testRegisterService
+     * @var string
      */
-    public function testCreate(stdClass $params)
+    private $jti;
+
+    /**
+     * @var string
+     */
+    private $ack;
+
+    /**
+     * @var array
+     */
+    private $symbol;
+
+    public function setUp(): void
     {
-        /**
-         * @var TokenInterface $tokenFactory
-         */
-        $tokenFactory = $params->tokenFactory;
-        $token = $tokenFactory->create('default', 'xxx-xxx-xxx', 'abc', [
+        parent::setUp();
+        $this->app->register(TokenService::class);
+        $this->token = $this->app->get(TokenInterface::class);
+        $this->scene = 'default';
+        $this->jti = 'test';
+        $this->ack = md5('test');
+        $this->symbol = [
             'role' => '*'
-        ]);
-        $this->assertInstanceOf(Token::class, $token, '令牌创建失败');
-        $params->token = (string)$token;
-        return $params;
+        ];
     }
 
-    /**
-     * @param stdClass $params
-     * @depends testCreate
-     */
-    public function testGet(stdClass $params)
+    public function testCreate()
     {
-        /**
-         * @var TokenInterface $tokenFactory
-         */
-        $tokenFactory = $params->tokenFactory;
-        $this->assertInstanceOf(
-            Token::class,
-            $tokenFactory->get($params->token),
-            '令牌信息获取失败'
+        $token = $this->token->create(
+            $this->scene,
+            $this->jti,
+            $this->ack,
+            $this->symbol
         );
+        $this->assertNotEmpty((string)$token, '令牌创建失败');
+        return (string)$token;
     }
 
     /**
-     * @param stdClass $params
      * @depends testCreate
      */
-    public function testVerify(stdClass $params)
+    public function testGet(string $tokenString)
+    {
+        $token = $this->token->get($tokenString);
+        $this->assertInstanceOf(Token::class, $token);
+        $this->assertEquals($this->jti, $token->getClaim('jti'));
+    }
+
+    /**
+     * @depends testCreate
+     */
+    public function testVerify(string $tokenString)
     {
         try {
-            /**
-             * @var TokenInterface $tokenFactory
-             */
-            $tokenFactory = $params->tokenFactory;
-            $result = $tokenFactory->verify('default', $params->token);
+            $result = $this->token->verify('default', $tokenString);
             $this->assertIsBool($result->expired, '未生成超时状态');
             $this->assertInstanceOf(Token::class, $result->token, '令牌信息获取失败');
+            $this->assertEquals($this->jti, $result->token->getClaim('jti'));
         } catch (Exception $e) {
             $this->expectErrorMessage($e->getMessage());
         }
