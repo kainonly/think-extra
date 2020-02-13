@@ -1,11 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace tests;
+namespace ExtraTests;
 
 use Exception;
 use Ramsey\Uuid\Uuid;
 use Stringy\Stringy;
+use Tests\BaseTest;
 use think\extra\contract\UtilsInterface;
 use think\extra\service\UtilsService;
 

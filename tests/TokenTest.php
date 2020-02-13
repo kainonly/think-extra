@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace tests;
+namespace ExtraTests;
 
 use Exception;
 use Lcobucci\JWT\Token;
+use Tests\BaseTest;
 use think\extra\contract\TokenInterface;
 use think\extra\service\TokenService;
 

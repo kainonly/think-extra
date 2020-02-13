@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace tests;
+namespace ExtraTests;
 
+use Tests\BaseTest;
 use think\extra\contract\HashInterface;
 use think\extra\service\HashService;
 
