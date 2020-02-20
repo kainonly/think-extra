@@ -5,7 +5,6 @@ namespace think\extra\service;
 
 use think\extra\common\CipherFactory;
 use think\extra\contract\CipherInterface;
-use think\extra\contract\UtilsInterface;
 use think\Service;
 
 class CipherService extends Service
@@ -18,8 +17,7 @@ class CipherService extends Service
 
             return new CipherFactory(
                 $config['app_secret'],
-                $config['app_id'],
-                $this->app->make(UtilsInterface::class)
+                $config['app_id']
             );
         });
     }

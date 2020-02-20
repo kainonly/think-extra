@@ -5,7 +5,6 @@ namespace think\extra\common;
 
 use phpseclib\Crypt\AES;
 use think\extra\contract\CipherInterface;
-use think\extra\contract\UtilsInterface;
 
 /**
  * 对称加密类
@@ -25,27 +24,15 @@ class CipherFactory implements CipherInterface
     private $iv;
 
     /**
-     * 工具类
-     * @var UtilsInterface
-     */
-    private $utils;
-
-    /**
      * 构造处理
      * CipherFactory constructor.
      * @param string $key
      * @param string $iv
-     * @param UtilsInterface $utils
      */
-    public function __construct(
-        string $key,
-        string $iv,
-        UtilsInterface $utils
-    )
+    public function __construct(string $key, string $iv)
     {
         $this->key = $key;
         $this->iv = $iv;
-        $this->utils = $utils;
     }
 
     /**
@@ -87,7 +74,7 @@ class CipherFactory implements CipherInterface
     {
         $cipher = $this->factoryCipher();
         $data = $cipher->decrypt(base64_decode($ciphertext));
-        return $this->utils->stringy($data)->isJson() && $auto_conver ?
-            json_decode($data, true) : $data;
+        return stringy($data)->isJson()
+        && $auto_conver ? json_decode($data, true) : $data;
     }
 }

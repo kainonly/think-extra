@@ -11,15 +11,21 @@
     "lcobucci/jwt": "^3.3"
   },
   "require-dev": {
+    "roave/security-advisories": "dev-master",
     "phpunit/phpunit": "8"
   },
   "autoload": {
     "psr-4": {
       "think\\extra\\": "src/"
     },
-    "classmap": [
-      "tests"
+    "files": [
+      "src/helper.php"
     ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ExtraTests\\": "tests//"
+    }
   },
   "extra": {
     "think": {
@@ -27,8 +33,7 @@
         "think\\extra\\service\\CipherService",
         "think\\extra\\service\\ContextService",
         "think\\extra\\service\\HashService",
-        "think\\extra\\service\\TokenService",
-        "think\\extra\\service\\UtilsService"
+        "think\\extra\\service\\TokenService"
       ]
     }
   },

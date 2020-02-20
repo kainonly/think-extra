@@ -3,10 +3,7 @@ declare (strict_types=1);
 
 namespace think\extra\common;
 
-use phpseclib\Crypt\AES;
-use think\extra\contract\CipherInterface;
 use think\extra\contract\ContextInterface;
-use think\extra\contract\UtilsInterface;
 
 /**
  * 上下文工具

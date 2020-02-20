@@ -7,27 +7,13 @@ use Exception;
 use Ramsey\Uuid\Uuid;
 use Stringy\Stringy;
 use Tests\BaseTest;
-use think\extra\contract\UtilsInterface;
-use think\extra\service\UtilsService;
 
-class UtilsTest extends BaseTest
+class HelperTest extends BaseTest
 {
-    /**
-     * @var UtilsInterface
-     */
-    private $utils;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->app->register(UtilsService::class);
-        $this->utils = $this->app->get(UtilsInterface::class);
-    }
-
     public function testUuid()
     {
         try {
-            $uuid = $this->utils->uuid();
+            $uuid = \uuid();
             $this->assertInstanceOf(Uuid::class, $uuid);
             $this->assertNotEmpty($uuid->toString());
         } catch (Exception $e) {
@@ -37,7 +23,7 @@ class UtilsTest extends BaseTest
 
     public function testStringy()
     {
-        $stringy = $this->utils->stringy('hello');
+        $stringy = \stringy('hello');
         $this->assertInstanceOf(Stringy::class, $stringy);
         $this->assertEquals('e', $stringy->at(1));
     }
