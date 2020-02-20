@@ -58,7 +58,7 @@ class HashFactory implements HashInterface
         return password_hash(
             $password,
             $this->algo,
-            !empty($options) ? $options : $this->options
+            $options ?? $this->options
         );
     }
 

@@ -37,8 +37,6 @@ class ContextFactory implements ContextInterface
      */
     public function get(string $abstract)
     {
-        return !empty($this->context[$abstract]) ?
-            $this->context[$abstract] :
-            null;
+        return $this->context[$abstract] ?? null;
     }
 }

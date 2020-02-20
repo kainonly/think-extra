@@ -70,11 +70,11 @@ class CipherFactory implements CipherInterface
         $cipher = $this->factoryCipher();
         if (is_string($context)) {
             return base64_encode($cipher->encrypt($context));
-        } elseif (is_array($context)) {
-            return base64_encode($cipher->encrypt(json_encode($context)));
-        } else {
-            return '';
         }
+        if (is_array($context)) {
+            return base64_encode($cipher->encrypt(json_encode($context)));
+        }
+        return '';
     }
 
     /**
