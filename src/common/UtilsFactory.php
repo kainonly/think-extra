@@ -42,6 +42,8 @@ class UtilsFactory implements UtilsInterface
     {
         if (!empty($url)) {
             $url = $this->route->buildUrl($url)->build();
+        } else {
+            $url = 'javascript:history.back(-1)';
         }
         $dispatch_success_tmpl = $this->options['dispatch_success_tmpl'] ?? app()->getRootPath() . 'vendor/kain/think-extra/src/tpl/dispatch.html';
         $dispatch_error_tmpl = $this->options['dispatch_error_tmpl'] ?? app()->getRootPath() . 'vendor/kain/think-extra/src/tpl/dispatch.html';
