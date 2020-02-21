@@ -3,6 +3,7 @@
   "description": "ThinkPHP 扩展库，让它具备类似 Laravel 的常用功能",
   "require": {
     "ext-json": "*",
+    "php": ">=7.4.0",
     "topthink/framework": "^6.0.0",
     "topthink/think-view": "^1.0",
     "ramsey/uuid": "^3.8",
