@@ -9,7 +9,7 @@ use think\Service;
 
 class HashService extends Service
 {
-    public function register()
+    public function register(): void
     {
         $this->app->bind(HashInterface::class, function () {
             $options = $this->app->config

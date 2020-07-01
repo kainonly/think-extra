@@ -9,7 +9,7 @@ use think\Service;
 
 class UtilsService extends Service
 {
-    public function register()
+    public function register(): void
     {
         $this->app->bind(UtilsInterface::class, function () {
             $options = $this->app->config

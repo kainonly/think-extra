@@ -5,7 +5,6 @@ namespace think\extra\common;
 
 use InvalidArgumentException;
 use stdClass;
-use Exception;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
@@ -24,13 +23,13 @@ class TokenFactory implements TokenInterface
      * 令牌配置
      * @var array $config
      */
-    private $options;
+    private array $options;
 
     /**
      * 令牌密钥
      * @var string $secret
      */
-    private $secret;
+    private string $secret;
 
     /**
      * 构造处理
@@ -81,19 +80,19 @@ class TokenFactory implements TokenInterface
      * @param string $scene
      * @param string $tokenString
      * @return stdClass
-     * @throws Exception
+     * @throws InvalidArgumentException
      * @inheritDoc
      */
     public function verify(string $scene, string $tokenString): stdClass
     {
         $token = (new Parser())->parse($tokenString);
         if (!$token->verify(new Sha256(), $this->secret)) {
-            throw new Exception('Token validation is incorrect');
+            throw new InvalidArgumentException('Token validation is incorrect');
         }
 
-        if ($token->getClaim('iss') != $this->options[$scene]['issuer'] ||
-            $token->getClaim('aud') != $this->options[$scene]['audience']) {
-            throw new Exception('Token information is incorrect');
+        if ($token->getClaim('iss') !== $this->options[$scene]['issuer'] ||
+            $token->getClaim('aud') !== $this->options[$scene]['audience']) {
+            throw new InvalidArgumentException('Token information is incorrect');
         }
 
         $result = new stdClass();

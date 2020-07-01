@@ -15,7 +15,7 @@ class Jump
     ];
     private string $type;
     private array $header = [];
-    private array $options = [];
+    private array $options;
 
     public function __construct(string $msg, string $url, string $type, array $options)
     {

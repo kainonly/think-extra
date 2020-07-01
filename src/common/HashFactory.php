@@ -14,15 +14,15 @@ class HashFactory implements HashInterface
 {
     /**
      * 加密算法
-     * @var int
+     * @var string
      */
-    private $algo;
+    private string $algo;
 
     /**
      * 加密配置
      * @var array
      */
-    private $options;
+    private array $options;
 
     /**
      * 构造处理

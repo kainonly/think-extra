@@ -9,7 +9,7 @@ use think\Service;
 
 class ContextService extends Service
 {
-    public $bind = [
+    public array $bind = [
         ContextInterface::class => ContextFactory::class
     ];
 }

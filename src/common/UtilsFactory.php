@@ -17,7 +17,6 @@ use think\Route;
 class UtilsFactory implements UtilsInterface
 {
     private Route $route;
-    private Request $request;
     private array $options;
 
     /**
@@ -28,7 +27,6 @@ class UtilsFactory implements UtilsInterface
     public function __construct(App $app, array $option)
     {
         $this->route = $app->route;
-        $this->request = $app->request;
         $this->options = $option;
     }
 

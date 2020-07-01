@@ -9,7 +9,7 @@ use think\Service;
 
 class TokenService extends Service
 {
-    public function register()
+    public function register(): void
     {
         $this->app->bind(TokenInterface::class, function () {
             $config = $this->app->config;

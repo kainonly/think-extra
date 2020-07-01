@@ -15,7 +15,7 @@ interface CipherInterface
     /**
      * 解密
      * @param string $ciphertext 密文
-     * @param bool $is_array 是否为数组
+     * @param bool $auto_conver 自动转换
      * @return string|array 数据源
      */
     public function decrypt(string $ciphertext, bool $auto_conver = true);

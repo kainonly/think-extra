@@ -15,7 +15,7 @@ class ContextFactory implements ContextInterface
     /**
      * @var array 上下文内容
      */
-    private $context = [];
+    private array $context = [];
 
     /**
      * @param string $abstract

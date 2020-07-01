@@ -9,7 +9,7 @@ use think\Service;
 
 class CipherService extends Service
 {
-    public function register()
+    public function register(): void
     {
         $this->app->bind(CipherInterface::class, function () {
             $config = $this->app->config
