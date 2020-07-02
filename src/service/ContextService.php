@@ -9,7 +9,8 @@ use think\Service;
 
 class ContextService extends Service
 {
-    public array $bind = [
-        ContextInterface::class => ContextFactory::class
-    ];
+    public function register(): void
+    {
+        $this->app->bind(ContextInterface::class, ContextFactory::class);
+    }
 }
