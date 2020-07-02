@@ -16,12 +16,12 @@ class CipherFactory implements CipherInterface
     /**
      * @var string 密钥
      */
-    private $key;
+    private string $key;
 
     /**
      * @var string 偏移量
      */
-    private $iv;
+    private string $iv;
 
     /**
      * 构造处理
