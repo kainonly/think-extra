@@ -74,7 +74,9 @@ class CipherFactory implements CipherInterface
     {
         $cipher = $this->factoryCipher();
         $data = $cipher->decrypt(base64_decode($ciphertext));
-        return stringy($data)->isJson()
-        && $auto_conver ? json_decode($data, true) : $data;
+        if ($auto_conver && stringy($data)->isJson()) {
+            return json_decode($data, true);
+        }
+        return $data;
     }
 }

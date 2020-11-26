@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ExtraTests;
 
-use Tests\BaseTest;
 use think\extra\contract\CipherInterface;
 use think\extra\service\CipherService;
 
@@ -14,11 +13,8 @@ class CipherTest extends BaseTest
      */
     private $cipher;
 
-    /**
-     * @var array
-     */
-    private $data = [
-        'name' => 'kain'
+    private array $context = [
+        'name' => 'my cipher'
     ];
 
     public function setUp(): void
@@ -28,23 +24,21 @@ class CipherTest extends BaseTest
         $this->cipher = $this->app->get(CipherInterface::class);
     }
 
-    /**
-     * @return string
-     */
-    public function testEncrypt()
+    public function testEncrypt(): string
     {
-        $context = $this->cipher->encrypt($this->data);
-        $this->assertNotEmpty($context, '加密不成功');
-        return $context;
+        $encryptText = $this->cipher->encrypt($this->context);
+        self::assertNotEmpty($encryptText, '加密不成功');
+        return $encryptText;
     }
 
     /**
-     * @param string $context
      * @depends testEncrypt
+     * @param string $encryptText
      */
-    public function testDecrypt(string $context)
+    public function testDecrypt(string $encryptText): void
     {
-        $result = $this->cipher->decrypt($context);
-        $this->assertEquals($this->data, $result, '解密信息不对称');
+        $result = $this->cipher->decrypt($encryptText);
+        self::assertEquals($this->context, $result, '解密信息不对称');
     }
+
 }

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ExtraTests;
 
-use Tests\BaseTest;
 use think\extra\contract\HashInterface;
 use think\extra\service\HashService;
 
@@ -13,38 +12,32 @@ class HashTest extends BaseTest
      * @var HashInterface
      */
     private $hash;
-
     /**
      * @var string
      */
-    private $password;
+    private string $password = 'mypassword';
 
     public function setUp(): void
     {
         parent::setUp();
         $this->app->register(HashService::class);
         $this->hash = $this->app->get(HashInterface::class);
-        $this->password = 'mypassword';
     }
 
-    public function testCreateHash()
+    public function testCreateHash(): string
     {
-        $hashContext = $this->hash->create($this->password);
-        $this->assertNotEmpty(
-            $hashContext,
-            '哈希密码创建失败'
-        );
-        return $hashContext;
+        $hashPassword = $this->hash->create($this->password);
+        self::assertNotEmpty($hashPassword, '哈希密码创建失败');
+        return $hashPassword;
     }
 
     /**
      * @depends testCreateHash
+     * @param string $hashPassword
      */
-    public function testCheckHash(string $context)
+    public function testCheckHash(string $hashPassword): void
     {
-        $this->assertTrue(
-            $this->hash->check($this->password, $context),
-            '密码验证失败'
-        );
+        $password = $this->hash->check($this->password, $hashPassword);
+        self::assertTrue($password, '密码验证失败');
     }
 }

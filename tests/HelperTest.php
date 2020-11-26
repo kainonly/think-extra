@@ -5,26 +5,23 @@ namespace ExtraTests;
 
 use Exception;
 use Ramsey\Uuid\Uuid;
-use Stringy\Stringy;
-use Tests\BaseTest;
 
 class HelperTest extends BaseTest
 {
-    public function testUuid()
+    public function testUuid(): void
     {
         try {
             $uuid = \uuid();
-            $this->assertInstanceOf(Uuid::class, $uuid);
-            $this->assertNotEmpty($uuid->toString());
+            self::assertInstanceOf(Uuid::class, $uuid);
+            self::assertNotEmpty($uuid->toString());
         } catch (Exception $e) {
             $this->expectErrorMessage($e->getMessage());
         }
     }
 
-    public function testStringy()
+    public function testStringy(): void
     {
         $stringy = \stringy('hello');
-        $this->assertInstanceOf(Stringy::class, $stringy);
-        $this->assertEquals('e', $stringy->at(1));
+        self::assertEquals('e', $stringy->at(1));
     }
 }

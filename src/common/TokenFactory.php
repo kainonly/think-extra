@@ -3,13 +3,14 @@ declare (strict_types=1);
 
 namespace think\extra\common;
 
-use InvalidArgumentException;
 use stdClass;
-use Lcobucci\JWT\Token;
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\Signer\Key;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Carbon\CarbonImmutable;
+use InvalidArgumentException;
+use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Token\Plain;
+use Lcobucci\JWT\Validation\Constraint\IssuedBy;
+use Lcobucci\JWT\Validation\Constraint\PermittedFor;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use think\extra\contract\TokenInterface;
 
 /**
@@ -20,26 +21,26 @@ use think\extra\contract\TokenInterface;
 class TokenFactory implements TokenInterface
 {
     /**
+     * JWT生产配置
+     * @var Configuration
+     */
+    private Configuration $config;
+
+    /**
      * 令牌配置
      * @var array $config
      */
     private array $options;
 
     /**
-     * 令牌密钥
-     * @var string $secret
-     */
-    private string $secret;
-
-    /**
-     * 构造处理
-     * @param string $secret 令牌密钥
+     * @param Configuration $config JWT生产配置
      * @param array $options 令牌配置
      */
-    public function __construct(string $secret, array $options)
+    public function __construct(Configuration $config, array $options)
     {
-        $this->secret = $secret;
+        $this->config = $config;
         $this->options = $options;
+
     }
 
     /**
@@ -47,33 +48,34 @@ class TokenFactory implements TokenInterface
      * @param string $jti
      * @param string $ack
      * @param array $symbol
-     * @return Token
+     * @return Plain
      * @inheritDoc
      */
-    public function create(string $scene, string $jti, string $ack, array $symbol = []): Token
+    public function create(string $scene, string $jti, string $ack, array $symbol = []): Plain
     {
         if (empty($this->options[$scene])) {
-            throw new InvalidArgumentException("The [$scene] does not exist.");
+            throw new InvalidArgumentException("The [{$scene}] does not exist.");
         }
-
-        return (new Builder())
+        $now = CarbonImmutable::now();
+        return $this->config->builder()
             ->issuedBy($this->options[$scene]['issuer'])
             ->permittedFor($this->options[$scene]['audience'])
-            ->identifiedBy($jti, true)
+            ->identifiedBy($jti)
             ->withClaim('ack', $ack)
             ->withClaim('symbol', $symbol)
-            ->expiresAt(time() + $this->options[$scene]['expires'])
-            ->getToken(new Sha256(), new Key($this->secret));
+            ->expiresAt($now->addSeconds($this->options[$scene]['expires'])->toDateTimeImmutable())
+            ->getToken($this->config->signer(), $this->config->signingKey());
     }
 
     /**
-     * @param string $tokenString
-     * @return Token
+     * @param string $jwt
      * @inheritDoc
      */
-    public function get(string $tokenString): Token
+    public function get(string $jwt): Plain
     {
-        return (new Parser())->parse($tokenString);
+        $token = $this->config->parser()->parse($jwt);
+        assert($token instanceof Plain);
+        return $token;
     }
 
     /**
@@ -83,20 +85,23 @@ class TokenFactory implements TokenInterface
      * @throws InvalidArgumentException
      * @inheritDoc
      */
-    public function verify(string $scene, string $tokenString): stdClass
+    public function verify(string $scene, string $jwt): stdClass
     {
-        $token = (new Parser())->parse($tokenString);
-        if (!$token->verify(new Sha256(), $this->secret)) {
+        if (empty($this->options[$scene])) {
+            throw new InvalidArgumentException("The [{$scene}] does not exist.");
+        }
+        $this->config->setValidationConstraints(
+            new IssuedBy($this->options[$scene]['issuer']),
+            new PermittedFor($this->options[$scene]['audience']),
+            new SignedWith($this->config->signer(), $this->config->signingKey())
+        );
+        $token = $this->config->parser()->parse($jwt);
+        $constraints = $this->config->validationConstraints();
+        if (!$this->config->validator()->validate($token, ...$constraints)) {
             throw new InvalidArgumentException('Token validation is incorrect');
         }
-
-        if ($token->getClaim('iss') !== $this->options[$scene]['issuer'] ||
-            $token->getClaim('aud') !== $this->options[$scene]['audience']) {
-            throw new InvalidArgumentException('Token information is incorrect');
-        }
-
         $result = new stdClass();
-        $result->expired = $token->isExpired();
+        $result->expired = $token->isExpired(CarbonImmutable::now()->toDateTimeImmutable());
         $result->token = $token;
         return $result;
     }

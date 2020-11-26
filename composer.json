@@ -1,19 +1,19 @@
 {
   "name": "kain/think-extra",
-  "description": "ThinkPHP 扩展库，让它具备类似 Laravel 的常用功能",
+  "description": "ThinkPHP 扩展库集成",
   "require": {
-    "ext-json": "*",
     "php": ">=7.4.0",
+    "ext-json": "*",
     "topthink/framework": "^6.0.0",
-    "topthink/think-view": "^1.0",
     "ramsey/uuid": "^3.8",
     "danielstjules/stringy": "^3.1",
     "phpseclib/phpseclib": "^2.0",
-    "lcobucci/jwt": "^3.3"
+    "lcobucci/jwt": "^4.0",
+    "nesbot/carbon": "^2.41"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
-    "phpunit/phpunit": "8"
+    "phpunit/phpunit": "^8.0.0"
   },
   "autoload": {
     "psr-4": {

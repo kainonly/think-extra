@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ExtraTests;
 
-use Tests\BaseTest;
 use think\extra\contract\ContextInterface;
 use think\extra\service\ContextService;
 
@@ -21,7 +20,7 @@ class ContextTest extends BaseTest
         $this->context = $this->app->get(ContextInterface::class);
     }
 
-    public function testContext()
+    public function testContext(): void
     {
         $start = function () {
             $this->context->set('name', 'abc');
@@ -32,6 +31,6 @@ class ContextTest extends BaseTest
             return $this->context->get('name');
         };
         $result = $funcGet();
-        $this->assertEquals('abc', $result, '上下文内容获取失败');
+        self::assertEquals('abc', $result, '上下文内容获取失败');
     }
 }
