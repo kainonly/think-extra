@@ -3,7 +3,9 @@ declare (strict_types=1);
 
 namespace think\extra\common;
 
-use phpseclib\Crypt\AES;
+use phpseclib3\Crypt\AES;
+use phpseclib3\Crypt\ChaCha20;
+use phpseclib3\Crypt\Common\SymmetricKey;
 use think\extra\contract\CipherInterface;
 
 /**
@@ -19,31 +21,46 @@ class CipherFactory implements CipherInterface
     private string $key;
 
     /**
-     * @var string 偏移量
+     * @var string 参考量
      */
-    private string $iv;
+    private string $mixed;
+
+    /**
+     * @var bool 向下兼容
+     */
+    private bool $compatible;
 
     /**
      * 构造处理
      * CipherFactory constructor.
      * @param string $key
-     * @param string $iv
+     * @param string $mixed
+     * @param bool $compatible
      */
-    public function __construct(string $key, string $iv)
+    public function __construct(string $key, string $mixed, bool $compatible)
     {
-        $this->key = $key;
-        $this->iv = $iv;
+        $this->key = str_pad(substr($key, 0, 32), 32, "\0");
+        $this->mixed = $mixed;
+        $this->compatible = $compatible;
     }
 
     /**
      * 生产加密工具
-     * @return AES
+     * @return SymmetricKey
      */
-    private function factoryCipher(): AES
+    private function factoryCipher(): SymmetricKey
     {
-        $cipher = new AES();
-        $cipher->setKey($this->key);
-        $cipher->setIV($this->iv);
+        if (!$this->compatible) {
+            $cipher = new ChaCha20();
+            $cipher->setKey($this->key);
+            $nonce = str_pad(substr($this->mixed, 0, 8), 8, "\0");
+            $cipher->setNonce($nonce);
+        } else {
+            $cipher = new AES('cbc');
+            $cipher->setKey($this->key);
+            $iv = str_pad(substr($this->mixed, 0, 16), 16, "\0");
+            $cipher->setIV($iv);
+        }
         return $cipher;
     }
 

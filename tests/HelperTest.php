@@ -11,9 +11,8 @@ class HelperTest extends BaseTest
     public function testUuid(): void
     {
         try {
-            $uuid = \uuid();
-            self::assertInstanceOf(Uuid::class, $uuid);
-            self::assertNotEmpty($uuid->toString());
+            $uuid = uuid();
+            self::assertTrue(Uuid::isValid($uuid->toString()));
         } catch (Exception $e) {
             $this->expectErrorMessage($e->getMessage());
         }

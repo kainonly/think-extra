@@ -12,12 +12,12 @@ class CipherService extends Service
     public function register(): void
     {
         $this->app->bind(CipherInterface::class, function () {
-            $config = $this->app->config
-                ->get('app');
-
+            $app = $this->app->config->get('app');
+            $cipher = $this->app->config->get('cipher');
             return new CipherFactory(
-                $config['app_secret'],
-                $config['app_id']
+                $app['app_secret'],
+                $app['app_id'],
+                $cipher['compatible'] ?? true
             );
         });
     }
