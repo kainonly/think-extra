@@ -12,8 +12,7 @@ class UtilsService extends Service
     public function register(): void
     {
         $this->app->bind(UtilsInterface::class, function () {
-            $options = $this->app->config
-                ->get('app');
+            $options = $this->app->config->get('app');
             return new UtilsFactory($this->app, $options);
         });
     }

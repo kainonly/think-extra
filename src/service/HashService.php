@@ -12,9 +12,7 @@ class HashService extends Service
     public function register(): void
     {
         $this->app->bind(HashInterface::class, function () {
-            $options = $this->app->config
-                ->get('hashing');
-
+            $options = $this->app->config->get('hashing');
             return new HashFactory($options);
         });
     }
